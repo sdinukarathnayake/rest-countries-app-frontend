@@ -21,7 +21,7 @@ const RegisterPage = () => {
         setError("");
 
         try {
-            await axios.post(`http://localhost:5000/users/register`, formData);
+            await axios.post(`http://rest-countries-app-backend-production.up.railway.app/users/register`, formData);
             navigate("/");
         } catch (err) {
             console.error("Registration failed:", err);

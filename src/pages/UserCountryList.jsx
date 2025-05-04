@@ -60,7 +60,7 @@ const CountryList = () => {
             if (!token) return;
     
             try {
-                const response = await axios.get('http://localhost:5000/users/get-favorites', {
+                const response = await axios.get('http://rest-countries-app-backend-production.up.railway.app/users/get-favorites', {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`
                     }
@@ -85,7 +85,7 @@ const CountryList = () => {
 
         try {
             const response = await axios.post(
-                "http://localhost:5000/users/toggle-favorite",
+                "http://rest-countries-app-backend-production.up.railway.app/users/toggle-favorite",
                 { countryCode: cca3 },
                 {
                     headers: {
