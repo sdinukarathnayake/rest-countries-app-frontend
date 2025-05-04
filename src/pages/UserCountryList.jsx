@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAllCountries } from "../api/ApiEndpoints";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
+import axios from "axios";
 
 const CountryList = () => {
     const [countries, setCountries] = useState([]);
@@ -8,8 +10,12 @@ const CountryList = () => {
     const [regionFilter, setRegionFilter] = useState("");
     const [languageFilter, setLanguageFilter] = useState("");
     const [currencyFilter, setCurrencyFilter] = useState("");
+    const [favoriteCountries, setFavoriteCountries] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     const navigate = useNavigate();
+
+    const token = localStorage.getItem("token");
 
     useEffect(() => {
         getAllCountries()
@@ -48,8 +54,69 @@ const CountryList = () => {
         setFilteredCountries(tempCountries);
     }, [regionFilter, languageFilter, currencyFilter, countries]);
 
+
+    useEffect(() => {
+        const fetchFavoriteCountries = async () => {
+            if (!token) return;
+    
+            try {
+                const response = await axios.get('http://localhost:5000/users/get-favorites', {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                });
+                setFavoriteCountries(response.data.favoriteCountries || []);
+            } catch (error) {
+                if (error.response?.status !== 404) {
+                    console.error("Error fetching favorite countries:", error.response?.data?.message || error.message);
+                }
+            }
+        };
+    
+        fetchFavoriteCountries();
+    }, [token]);
+    
+
+    const handleFavoriteClick = async (cca3) => {
+        if (!token) {
+            alert("You must be logged in to set a favorite country.");
+            return;
+        }
+
+        try {
+            const response = await axios.post(
+                "http://localhost:5000/users/toggle-favorite",
+                { countryCode: cca3 },
+                {
+                    headers: {
+                        Authorization: `Bearer ${localStorage.getItem(
+                            "token"
+                        )}`,
+                    },
+                }
+            );
+
+            setFavoriteCountries(response.data.favoriteCountries);
+        } catch (error) {
+            console.error("Error updating favorite countries:", error);
+        }
+    };
+
     const handleCountryClick = (code) => {
-        navigate(`/country/${code}`);
+        navigate(`/user-country/${code}`);
+    };
+
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            navigate("/login");
+        }
+    }, [navigate]);
+
+    const handleLogout = () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        navigate("/");
     };
 
     return (
@@ -59,13 +126,13 @@ const CountryList = () => {
                 <div className="flex items-center space-x-10">
                     <h1
                         className="text-lg sm:text-2xl mr-8 font-bold cursor-pointer hover:text-green-300 transition"
-                        onClick={() => navigate("/")}
+                        onClick={() => navigate("/dashboard")}
                     >
                         World Explorer
                     </h1>
                     <nav className="flex space-x-8">
                         <button
-                            onClick={() => navigate("/")}
+                            onClick={() => navigate("/dashboard")}
                             className={`hover:text-green-300 text-base sm:text-lg ${
                                 location.pathname === "/"
                                     ? "underline font-bold text-green-300"
@@ -75,7 +142,7 @@ const CountryList = () => {
                             Home
                         </button>
                         <button
-                            onClick={() => navigate("/countries")}
+                            onClick={() => navigate("/user-countries")}
                             className={`hover:text-green-300 text-base sm:text-lg ${
                                 location.pathname === "/countries"
                                     ? "underline font-bold text-green-300"
@@ -86,15 +153,44 @@ const CountryList = () => {
                         </button>
                     </nav>
                 </div>
+
                 <div className="flex space-x-3 mt-1 sm:mt-0">
-                    <button className="bg-green-700 w-[100px] py-3 rounded-full text-sm sm:text-base hover:bg-green-600 transition">
-                        Login
-                    </button>
-                    <button className="bg-green-700 w-[100px] py-1.5 rounded-full text-sm sm:text-base hover:bg-green-600 transition">
-                        Register
+                    <button
+                        onClick={handleLogout}
+                        className="bg-green-700 text-white px-6 py-2 rounded-full hover:bg-green-600 transition"
+                    >
+                        Logout
                     </button>
                 </div>
             </header>
+
+            {/* Favorite Countries Section */}
+            {favoriteCountries.length > 0 && (
+    <div className="w-full max-w-6xl mb-10">
+        <h2 className="text-2xl font-semibold text-green-700 mb-4">Your Favorite Countries</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            {favoriteCountries.map((favCountryCode) => {
+                const fav = countries.find(c => c.cca3 === favCountryCode);
+                if (!fav) return null;
+                return (
+                    <div
+                        key={fav.cca3}
+                        className="border rounded-lg overflow-hidden shadow hover:shadow-lg cursor-pointer bg-yellow-100 hover:scale-105 transform transition duration-300 p-5 flex items-center"
+                        onClick={() => handleCountryClick(fav.cca3)}
+                    >
+                        <img
+                            src={fav.flags?.png}
+                            alt={fav.name?.common}
+                            className="w-20 h-14 object-cover rounded mr-4"
+                        />
+                        <h2 className="text-xl font-semibold text-green-800">{fav.name?.common}</h2>
+                    </div>
+                );
+            })}
+        </div>
+    </div>
+)}
+
 
             {/* Main Content */}
             <main className="flex-grow mx-auto w-full sm:w-4/5 px-4 py-10">
@@ -196,6 +292,21 @@ const CountryList = () => {
                                         : "N/A"}
                                 </p>
                             </div>
+
+                            {/* Heart Icon */}
+                            <button
+                                className="absolute top-3 right-3 text-red-500 text-xl z-10 hover:scale-110 transition"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleFavoriteClick(country.cca3);
+                                }}
+                            >
+                                {favoriteCountries.includes(country.cca3) ? (
+                                    <FaHeart />
+                                ) : (
+                                    <FaRegHeart />
+                                )}
+                            </button>
                         </div>
                     ))}
                 </div>

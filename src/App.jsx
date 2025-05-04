@@ -7,6 +7,10 @@ import CountryDetails from './pages/CountryDetails';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import DashboardPage from './pages/DashboardPage';
+import UserCountryList from './pages/UserCountryList';
+import UserCountryDetails from './pages/UserCountryDetails';
+import FavouriteCountries from './pages/FavouriteCountries';
+import UserProfile from './pages/UserProfile';
 
 import ProtectedRoute from './pages/ProtectedRoute';
 
@@ -21,7 +25,12 @@ function App() {
 
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/register" element={<RegisterPage />} />
+
                 <Route path="/dashboard" element={<ProtectedRoute><DashboardPage /></ProtectedRoute>} />
+                <Route path="/user-countries" element={<ProtectedRoute><UserCountryList /></ProtectedRoute>} />
+                <Route path="/user-country/:code" element={<ProtectedRoute><UserCountryDetails /></ProtectedRoute>} />
+                <Route path="/favourite-countries" element={<ProtectedRoute><FavouriteCountries /></ProtectedRoute>} />
+                <Route path="/user-profile" element={<ProtectedRoute><UserProfile/></ProtectedRoute>} />
             </Routes>
         </div>
     );
