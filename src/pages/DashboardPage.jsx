@@ -113,7 +113,7 @@ const HomePage = () => {
                         <button
                             onClick={() => navigate("/dashboard")}
                             className={`hover:text-green-300 text-base sm:text-lg ${
-                                location.pathname === "/"
+                                location.pathname === "/dashboard"
                                     ? "underline font-bold text-green-300"
                                     : ""
                             }`}
@@ -123,12 +123,22 @@ const HomePage = () => {
                         <button
                             onClick={() => navigate("/user-countries")}
                             className={`hover:text-green-300 text-base sm:text-lg ${
-                                location.pathname === "/countries"
+                                location.pathname === "/user-countries"
                                     ? "underline font-bold text-green-300"
                                     : ""
                             }`}
                         >
                             All Countries
+                        </button>
+
+                        <button
+                            onClick={() => navigate("/user-profile")}
+                            className={`hover:text-green-300 text-base sm:text-lg ${
+                                location.pathname === "/user-profile"
+                                    ? "underline font-bold text-green-300"  : ""
+                            }`}
+                        >
+                            User Profile
                         </button>
                     </nav>
                 </div>

@@ -60,7 +60,7 @@ const CountryList = () => {
             if (!token) return;
     
             try {
-                const response = await axios.get('http://rest-countries-app-backend-production.up.railway.app/users/get-favorites', {
+                const response = await axios.get('https://rest-countries-app-backend-production.up.railway.app/users/get-favorite', {
                     headers: {
                         Authorization: `Bearer ${localStorage.getItem('token')}`
                     }
@@ -85,7 +85,7 @@ const CountryList = () => {
 
         try {
             const response = await axios.post(
-                "http://rest-countries-app-backend-production.up.railway.app/users/toggle-favorite",
+                "https://rest-countries-app-backend-production.up.railway.app/users/toggle-favorite",
                 { countryCode: cca3 },
                 {
                     headers: {
@@ -134,7 +134,7 @@ const CountryList = () => {
                         <button
                             onClick={() => navigate("/dashboard")}
                             className={`hover:text-green-300 text-base sm:text-lg ${
-                                location.pathname === "/"
+                                location.pathname === "/dashboard"
                                     ? "underline font-bold text-green-300"
                                     : ""
                             }`}
@@ -144,13 +144,25 @@ const CountryList = () => {
                         <button
                             onClick={() => navigate("/user-countries")}
                             className={`hover:text-green-300 text-base sm:text-lg ${
-                                location.pathname === "/countries"
+                                location.pathname === "/user-countries"
                                     ? "underline font-bold text-green-300"
                                     : ""
                             }`}
                         >
                             All Countries
                         </button>
+
+                        <button
+                            onClick={() => navigate("/user-profile")}
+                            className={`hover:text-green-300 text-base sm:text-lg ${
+                                location.pathname === "/user-profile"
+                                    ? "underline font-bold text-green-300"
+                                    : ""
+                            }`}
+                        >
+                            User Profile
+                        </button>
+                        
                     </nav>
                 </div>
 
@@ -166,34 +178,35 @@ const CountryList = () => {
 
             {/* Favorite Countries Section */}
             {favoriteCountries.length > 0 && (
-    <div className="w-full max-w-6xl mb-10">
-        <h2 className="text-2xl font-semibold text-green-700 mb-4">Your Favorite Countries</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {favoriteCountries.map((favCountryCode) => {
-                const fav = countries.find(c => c.cca3 === favCountryCode);
-                if (!fav) return null;
-                return (
-                    <div
-                        key={fav.cca3}
-                        className="border rounded-lg overflow-hidden shadow hover:shadow-lg cursor-pointer bg-yellow-100 hover:scale-105 transform transition duration-300 p-5 flex items-center"
-                        onClick={() => handleCountryClick(fav.cca3)}
-                    >
-                        <img
-                            src={fav.flags?.png}
-                            alt={fav.name?.common}
-                            className="w-20 h-14 object-cover rounded mr-4"
-                        />
-                        <h2 className="text-xl font-semibold text-green-800">{fav.name?.common}</h2>
+                <div className="mx-auto w-full sm:w-4/5 px-4 mt-6 mb-6">
+                    <h2 className="text-2xl font-semibold text-green-700 mb-4">Your Favorite Countries</h2>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                        {favoriteCountries.map((favCountryCode) => {
+                            const fav = countries.find(c => c.cca3 === favCountryCode);
+                            if (!fav) return null;
+                            return (
+                                <div
+                                    key={fav.cca3}
+                                    className="border rounded-lg overflow-hidden shadow hover:shadow-lg cursor-pointer bg-green-50 hover:scale-105 transform transition duration-300 p-3 flex items-center"
+                                    onClick={() => handleCountryClick(fav.cca3)}
+                                >
+                                    <img
+                                        src={fav.flags?.png}
+                                        alt={fav.name?.common}
+                                        className="w-20 h-14 object-fit rounded mr-4"
+                                    />
+                                    <h2 className="text-xl font-semibold text-green-800">{fav.name?.common}</h2>
+                                </div>
+                            );
+                        })}
                     </div>
-                );
-            })}
-        </div>
-    </div>
-)}
+                </div>
+            )}
 
 
             {/* Main Content */}
-            <main className="flex-grow mx-auto w-full sm:w-4/5 px-4 py-10">
+            <main className="flex-grow mx-auto w-full sm:w-4/5 px-4 pt-4 pb-10">
                 <h1 className="text-3xl sm:text-4xl font-bold text-center text-green-800 mb-10">
                     All Countries
                 </h1>

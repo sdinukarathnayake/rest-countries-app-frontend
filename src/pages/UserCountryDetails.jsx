@@ -99,17 +99,6 @@ const CountryDetails = () => {
                         </button>
 
                         <button
-                            onClick={() => navigate("/favourite-countries")}
-                            className={`hover:text-green-300 text-base sm:text-lg ${
-                                location.pathname === "/favourite-countries"
-                                    ? "underline font-bold text-green-300"
-                                    : ""
-                            }`}
-                        >
-                            Favourite Countries
-                        </button>
-
-                        <button
                             onClick={() => navigate("/user-profile")}
                             className={`hover:text-green-300 text-base sm:text-lg ${
                                 location.pathname === "/user-profile"

@@ -87,10 +87,16 @@ const CountryDetails = () => {
                     </nav>
                 </div>
                 <div className="flex space-x-3 mt-1 sm:mt-0">
-                    <button className="bg-green-700 w-[100px] py-3 rounded-full text-sm sm:text-base hover:bg-green-600 transition">
+                    <button
+                        onClick={() => navigate("/login")}
+                        className="bg-green-700 w-[100px] py-3 rounded-full text-sm sm:text-base hover:bg-green-600 transition"
+                    >
                         Login
                     </button>
-                    <button className="bg-green-700 w-[100px] py-1.5 rounded-full text-sm sm:text-base hover:bg-green-600 transition">
+                    <button
+                        onClick={() => navigate("/register")}
+                        className="bg-green-700 w-[100px] py-1.5 rounded-full text-sm sm:text-base hover:bg-green-600 transition"
+                    >
                         Register
                     </button>
                 </div>
