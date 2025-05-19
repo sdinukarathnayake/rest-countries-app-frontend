@@ -12,7 +12,7 @@ const LoginPage = () => {
         e.preventDefault();
         try {
             const response = await axios.post(
-                "http://rest-countries-app-backend-production.up.railway.app/users/login",
+                "https://rest-countries-app-backend-production.up.railway.app/users/login",
                 { email, password }
             );
 
